@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Blog Completo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: #2c3e50;
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+
+        nav {
+            background: #34495e;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        main { flex: 3; }
+
+        aside {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            height: fit-content;
+        }
+
+        .post {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .post h2 {
+            margin-top: 0;
+        }
+
+        .data {
+            font-size: 0.8em;
+            color: gray;
+        }
+
+        #novo-post {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        #novo-post input,
+        #novo-post textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        #novo-post button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Meu Blog</h1>
+    <p>Blog com sistema de postagens</p>
+</header>
+
+<nav>
+    <a href="#">Início</a>
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+</nav>
+
+<div class="container">
+
+    <main>
+
+        <!-- FORMULÁRIO PARA CRIAR POSTS -->
+        <section id="novo-post">
+            <h2>Novo Post</h2>
+            <input type="text" id="titulo" placeholder="Título do post">
+            <textarea id="conteudo" rows="6" placeholder="Escreva seu post aqui..."></textarea>
+            <button onclick="publicarPost()">Publicar</button>
+        </section>
+
+        <!-- POSTS PUBLICADOS -->
+        <section id="posts"></section>
+
+    </main>
+
+    <aside>
+        <h3>Sobre mim</h3>
+        <p>Sou apaixonado por tecnologia e programação.</p>
+
+        <h3>Categorias</h3>
+        <ul>
+            <li>Tecnologia</li>
+            <li>Programação</li>
+            <li>Pessoal</li>
+        </ul>
+    </aside>
+
+</div>
+
+<footer>
+    <p>© 2026 - Meu Blog</p>
+</footer>
+
+<script>
+    const areaPosts = document.getElementById("posts");
+
+    // Carregar posts salvos
+    document.addEventListener("DOMContentLoaded", () => {
+        const postsSalvos = JSON.parse(localStorage.getItem("posts")) || [];
+        postsSalvos.forEach(post => {
+            criarPost(post.titulo, post.conteudo, post.data);
+        });
+    });
+
+    function publicarPost() {
+        const titulo = document.getElementById("titulo").value.trim();
+        const conteudo = document.getElementById("conteudo").value.trim();
+
+        if (!titulo || !conteudo) {
+            alert("Preencha o título e o conteúdo!");
+            return;
+        }
+
+        const data = new Date().toLocaleString("pt-BR");
+
+        const post = { titulo, conteudo, data };
+
+        salvarPost(post);
+        criarPost(titulo, conteudo, data);
+
+        document.getElementById("titulo").value = "";
+        document.getElementById("conteudo").value = "";
+    }
+
+    function criarPost(titulo, conteudo, data) {
+        const div = document.createElement("div");
+        div.className = "post";
+
+        div.innerHTML = `
+            <h2>${titulo}</h2>
+            <p class="data">Publicado em ${data}</p>
+            <p>${conteudo.replace(/\n/g, "<br>")}</p>
+        `;
+
+        areaPosts.prepend(div);
+    }
+
+    function salvarPost(post) {
+        const posts = JSON.parse(localStorage.getItem("posts")) || [];
+        posts.unshift(post);
+        localStorage.setItem("posts", JSON.stringify(posts));
+    }
+</script>
+
+</body>
+</html>
